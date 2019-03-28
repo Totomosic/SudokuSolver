@@ -3,7 +3,7 @@ Python Sudoku solver
 
 Usage: python main.py input_file output_file
 Input file example:
-3---17-5-
+3---17-5-<br>
 --1---8-4
 ---56---1
 9-2------
