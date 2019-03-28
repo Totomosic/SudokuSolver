@@ -57,6 +57,30 @@ class Sudoku:
             values.append(cell.value)
         return values
 
+    def is_solved(self):
+        for cell in self.cells:
+            if cell.value == None:
+                return False
+        return True
+    
+    def is_row_solved(self, row):
+        for cell in self.get_row(row):
+            if cell.value == None:
+                return False
+        return True
+
+    def is_col_solved(self, col):
+        for cell in self.get_col(col):
+            if cell.value == None:
+                return False
+        return True
+
+    def is_large_cell_solved(self, cellIndex):
+        for cell in self.get_large_cell(cellIndex):
+            if cell.value == None:
+                return False
+        return True
+
     def initialize(self, fileData):
         index = 0
         for y in range(self.totalDim):
@@ -110,7 +134,7 @@ class Sudoku:
                 matrix.append(allowedValues)
         return matrix
 
-    def naive_solve(self):
+    def solve_possible_values(self):
         shouldContinue = True
         while shouldContinue:
             matrix = self.get_possible_values_matrix()
@@ -123,4 +147,6 @@ class Sudoku:
                         found = True
                 index += 1
             shouldContinue = found
-        print("Done solving")
+
+    def solve_rows(self):
+        pass
