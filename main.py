@@ -22,7 +22,7 @@ def main(input_file, output_file):
         board = Sudoku(largeCells)
         board.initialize(iFileData)
         board.print_board()
-        board.solve_possible_values()
+        board.solve()
         board.print_board()
 
 if __name__ == "__main__":

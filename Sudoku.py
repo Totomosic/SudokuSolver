@@ -1,4 +1,6 @@
 from Cell import Cell
+import copy
+import random
 
 class Sudoku:
     def __init__(self, largeCellDim):
@@ -81,6 +83,21 @@ class Sudoku:
                 return False
         return True
 
+    def get_available_values_of_cell(self, cell):
+        allowedValues = [x for x in range(1, self.totalDim + 1)]
+        disallowedValues = self.get_row_values(cell.y) + self.get_col_values(cell.x) + self.get_large_cell_values(cell.largeCellIndex)
+        for value in disallowedValues:
+            if value in allowedValues:
+                allowedValues.remove(value)
+        return allowedValues
+
+    def get_missing_values_from_cells(self, cells):
+        missingValues = [x for x in range(1, self.totalDim + 1)]
+        for cell in cells:
+            if cell.value in missingValues:
+                missingValues.remove(cell.value)
+        return missingValues
+
     def initialize(self, fileData):
         index = 0
         for y in range(self.totalDim):
@@ -126,12 +143,7 @@ class Sudoku:
             if cell.value != None:
                 matrix.append(None)
             else:
-                allowedValues = [x for x in range(1, self.totalDim + 1)]
-                disallowedValues = self.get_row_values(cell.y) + self.get_col_values(cell.x) + self.get_large_cell_values(cell.largeCellIndex)
-                for value in disallowedValues:
-                    if value in allowedValues:
-                        allowedValues.remove(value)
-                matrix.append(allowedValues)
+                matrix.append(self.get_available_values_of_cell(cell))
         return matrix
 
     def solve_possible_values(self):
@@ -148,5 +160,66 @@ class Sudoku:
                 index += 1
             shouldContinue = found
 
+    def solve_cells(self, cells):
+        missingValues = self.get_missing_values_from_cells(cells)
+        for value in missingValues:
+            potentialCells = []
+            for cell in cells:
+                if cell.value == None:
+                    availableCellValues = self.get_available_values_of_cell(cell)
+                    if value in availableCellValues:
+                        potentialCells.append(cell)
+            if len(potentialCells) == 1:
+                potentialCells[0].value = value
+                self.solve_cells(cells)
+                return
+
     def solve_rows(self):
-        pass
+        for row in range(self.totalDim):
+            self.solve_cells(self.get_row(row))
+
+    def solve_cols(self):
+        for col in range(self.totalDim):
+            self.solve_cells(self.get_col(col))
+
+    def solve_large_cells(self):
+        for c in range(self.largeCellsDim * self.largeCellsDim):
+            self.solve_cells(self.get_large_cell(c))
+
+    def get_possible_guesses_from_cells(self, cells):
+        minNum = 100
+        guesses = []
+        for cell in cells:
+            if cell.value == None:
+                availableValues = self.get_available_values_of_cell(cell)
+                if len(availableValues) <= minNum:
+                    minNum = len(availableValues)
+                    for val in availableValues:
+                        guesses.append([cell.x, cell.y, val])
+        return guesses
+
+    def make_guess(self, guess):
+        self.get_cell(guess[0], guess[1]).value = guess[2]
+
+    def try_solve(self):
+        count = 0
+        while not self.is_solved() and count < 10:
+            self.solve_possible_values()
+            self.solve_rows()
+            self.solve_cols()
+            self.solve_large_cells()
+            count += 1
+
+    def solve(self):
+        self.try_solve()
+        if not self.is_solved():
+            state = copy.deepcopy(self.cells)
+            remainingGuesses = self.get_possible_guesses_from_cells(state)
+            while not self.is_solved() and len(remainingGuesses) > 0:
+                self.cells = copy.deepcopy(state)
+                guess = remainingGuesses[random.randint(0, len(remainingGuesses) - 1)]
+                print("Making guess", guess)
+                self.make_guess(guess)   
+                remainingGuesses.remove(guess)      
+                self.try_solve()
+            
