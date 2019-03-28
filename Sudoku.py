@@ -193,6 +193,8 @@ class Sudoku:
             if cell.value == None:
                 availableValues = self.get_available_values_of_cell(cell)
                 if len(availableValues) <= minNum:
+                    if len(availableValues) < minNum:
+                        guesses = []
                     minNum = len(availableValues)
                     for val in availableValues:
                         guesses.append([cell.x, cell.y, val])
@@ -217,7 +219,8 @@ class Sudoku:
             remainingGuesses = self.get_possible_guesses_from_cells(state)
             while not self.is_solved() and len(remainingGuesses) > 0:
                 self.cells = copy.deepcopy(state)
-                guess = remainingGuesses[random.randint(0, len(remainingGuesses) - 1)]
+                guessIndex = 0#random.randint(0, len(remainingGuesses) - 1)
+                guess = remainingGuesses[guessIndex]
                 print("Making guess", guess)
                 self.make_guess(guess)   
                 remainingGuesses.remove(guess)      
