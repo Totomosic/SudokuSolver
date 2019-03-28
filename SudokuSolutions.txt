@@ -1,0 +1,2 @@
+easy.txt: https://www.websudoku.com/?select=1&level=1 (easy, #1)
+hard.txt: https://www.websudoku.com/?select=1&level=1 (hard, #1)

@@ -19,10 +19,11 @@ def main(input_file, output_file):
         iFileData = iFileData.replace("\n", "")
         dimension = determine_sudoku_dimensions(iFileData)
         largeCells = int(math.sqrt(dimension))
-        board = Sudoku(largeCells, largeCells)
+        board = Sudoku(largeCells)
         board.initialize(iFileData)
         board.print_board()
-        print(board.get_possible_values_matrix())
+        board.naive_solve()
+        board.print_board()
 
 if __name__ == "__main__":
     args = sys.argv

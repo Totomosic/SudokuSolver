@@ -7,13 +7,7 @@ class Cell:
         self.largeCellIndex = largeCellIndex
         self.value = value
 
-    def has_value(self):
-        return self.value != None
-
-    def get_value(self):
-        return self.value
-
     def to_string(self):
-        if self.has_value():
-            return str(self.get_value())
+        if self.value != None:
+            return str(self.value)
         return " "
