@@ -1,8 +1,8 @@
 # SudokuSolver
 Python Sudoku solver
 
-Usage: python main.py input_file output_file
-Input file example:<br>
+Usage: python main.py input_file output_file<br>
+Input file example (new lines not required):<br>
 3---17-5-<br>
 --1---8-4<br>
 ---56---1<br>
