@@ -24,6 +24,11 @@ def main(input_file, output_file):
         board.print_board()
         board.solve()
         board.print_board()
+        if board.is_solved():
+            with open(output_file, "w") as of:
+                of.write(board.to_string())
+        else:
+            print("Failed to solve sudoku")
 
 if __name__ == "__main__":
     args = sys.argv
